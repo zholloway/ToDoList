@@ -1,6 +1,7 @@
 pragma solidity > 0.5.0;
 
-import { Task, ProgressStatus } from "../structs/Task.sol";
+import { Task } from "../structs/Task.sol";
+import { ProgressStatus } from "../enums/ProgressStatus.sol";
 
 library TaskEvents
 {
