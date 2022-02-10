@@ -1,13 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity > 0.5.0;
-import { Task } from "../structs/Task.sol";
-import { TaskEvents } from "../libs/TaskEvents.sol";
-import { ProgressStatus } from "../enums/ProgressStatus.sol";
 
 contract ToDoList
 {
-    using TaskEvents for Task;
-
     address payable private owner;
     uint256 private taskCount = 0;
     mapping(uint256 => Task) private tasks;
@@ -17,6 +12,23 @@ contract ToDoList
         require(owner == msg.sender);
         _;
     }
+
+    enum ProgressStatus {
+        New,
+        InProgress,
+        Complete
+    }
+
+    struct Task {
+        uint256 id;
+        string content;
+        ProgressStatus progressStatus;
+        bool isActive;
+    }
+
+    event TaskCreated(uint256 taskId, string content);
+    event TaskProgressStatusUpdate (uint256 taskId, ProgressStatus progressStatus);
+    event TaskDeleted(uint256 _taskId);
 
     constructor()
     {
@@ -44,25 +56,26 @@ contract ToDoList
         });
         tasks[taskId] = task;
         taskCount++;
-        task.EmitCreated();
+        emit TaskCreated(taskId, _content);
     }
 
     function updateProgressStatus(uint256 taskId, uint256 progressStatus) public ownerOnly
     {
         require(progressStatus < 3, "Progress status does not exist");
-        Task memory _task = tasks[taskId];
-        ProgressStatus _newStatus = ProgressStatus(progressStatus);
-        require(_task.progressStatus != _newStatus, "Task is already set to given progress status");
-        _task.progressStatus = _newStatus;
-        tasks[taskId] = _task;
-        _task.EmitProgressStatusUpdate();
+
+        Task memory task = tasks[taskId];
+        ProgressStatus newStatus = ProgressStatus(progressStatus);
+        require(task.progressStatus != newStatus, "Task is already set to given progress status");
+        task.progressStatus = newStatus;
+        tasks[taskId] = task;
+        emit TaskProgressStatusUpdate(task.id, newStatus);
     }
 
-    function deleteTask(uint256 _taskId) public ownerOnly
+    function deleteTask(uint256 taskId) public ownerOnly
     {
-        Task memory _task = tasks[_taskId];
-        _task.isActive = false;
-        tasks[_taskId] = _task;
-        _task.EmitDeleted();
+        Task memory task = tasks[taskId];
+        task.isActive = false;
+        tasks[taskId] = task;
+        emit TaskDeleted(taskId);
     }
 }
