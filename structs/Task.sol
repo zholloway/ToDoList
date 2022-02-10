@@ -6,9 +6,3 @@ struct Task {
     ProgressStatus progressStatus;
     bool isActive;
 }
-
-enum ProgressStatus {
-    New,
-    InProgress,
-    Complete
-}

@@ -1,13 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity > 0.5.0;
-import { Task, ProgressStatus } from "../structs/Task.sol";
+import { Task } from "../structs/Task.sol";
 import { TaskEvents } from "../libs/TaskEventLibrary.sol";
+import { ProgressStatus } from "../enums/ProgressStatus.sol";
 
 contract ToDoLists
 {
     using TaskEvents for Task;
 
-    address owner;
+    address private owner;
     uint256 taskCount = 0;
     mapping(uint256 => Task) tasks;
 
