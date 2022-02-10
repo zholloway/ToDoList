@@ -23,6 +23,7 @@ library TaskEvents
     )
     internal
     {
+        require(_task.isActive && _task.progressStatus == ProgressStatus.New);
         emit TaskCreated(_task.id, _task.content);
     }
 
@@ -39,6 +40,7 @@ library TaskEvents
     )
     internal
     {
+        require(!_task.isActive);
         emit TaskDeleted(_task.id);
     }
 }

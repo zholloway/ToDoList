@@ -49,7 +49,9 @@ contract ToDoLists
     {
         require(_progressStatus < 3);
         Task memory _task = tasks[_taskId];
-        _task.progressStatus = ProgressStatus(_progressStatus);
+        ProgressStatus _newStatus = ProgressStatus(_progressStatus);
+        require(_task.progressStatus != _newStatus);
+        _task.progressStatus = _newStatus;
         tasks[_taskId] = _task;
         _task.EmitProgressStatusUpdate();
     }
