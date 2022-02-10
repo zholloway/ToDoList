@@ -48,34 +48,50 @@ contract ToDoList
     function createTask(string memory _content) public ownerOnly
     {
         uint256 taskId = taskCount + 1;
+
         Task memory task = Task({
             id: taskId,
             content: _content,
             progressStatus: ProgressStatus.New,
             isActive: true
         });
+
         tasks[taskId] = task;
         taskCount++;
+
         emit TaskCreated(taskId, _content);
     }
 
     function updateProgressStatus(uint256 taskId, uint256 progressStatus) public ownerOnly
     {
+        requireTaskExists(taskId);
         require(progressStatus < 3, "Progress status does not exist");
 
         Task memory task = tasks[taskId];
         ProgressStatus newStatus = ProgressStatus(progressStatus);
+
         require(task.progressStatus != newStatus, "Task is already set to given progress status");
+
         task.progressStatus = newStatus;
         tasks[taskId] = task;
+
         emit TaskProgressStatusUpdate(task.id, newStatus);
+    }
+
+    function requireTaskExists(uint256 taskId) private view 
+    {
+        require (taskId <= taskCount, "Task does not exist");
     }
 
     function deleteTask(uint256 taskId) public ownerOnly
     {
+        requireTaskExists(taskId);
+
         Task memory task = tasks[taskId];
+
         task.isActive = false;
         tasks[taskId] = task;
+
         emit TaskDeleted(taskId);
     }
 }
