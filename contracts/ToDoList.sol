@@ -37,11 +37,11 @@ contract ToDoList
     {
         uint256 taskId = taskCount + 1;
         Task memory task = Task({
-                id: taskId,
-                content: _content,
-                progressStatus: ProgressStatus.New,
-                isActive: true
-            });
+            id: taskId,
+            content: _content,
+            progressStatus: ProgressStatus.New,
+            isActive: true
+        });
         tasks[taskId] = task;
         taskCount++;
         task.EmitCreated();
