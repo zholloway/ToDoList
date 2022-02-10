@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >0.5.0;
 import { Task, ProgressStatus } from "../structs/Task.sol";
-import { TaskEventLibrary } from "../libs/TaskEventLibrary.sol";
+import { TaskEvents } from "../libs/TaskEventLibrary.sol";
 
 contract ToDoLists
 {
+    using TaskEvents for Task;
+
     address owner;
     uint256 taskCount = 0;
     mapping(uint256 => Task) tasks;
@@ -35,7 +37,7 @@ contract ToDoLists
             });
         tasks[_taskId] = _task;
         taskCount++;
-        TaskEventLibrary.EmitTaskCreated(_task);
+        _task.EmitCreated();
     }
 
     function updateProgressStatus(
@@ -49,7 +51,7 @@ contract ToDoLists
         Task memory _task = tasks[_taskId];
         _task.progressStatus = ProgressStatus(_progressStatus);
         tasks[_taskId] = _task;
-        TaskEventLibrary.EmitTaskProgressStatusUpdate(_task);
+        _task.EmitProgressStatusUpdate();
     }
 
     function deleteTask(
@@ -61,6 +63,6 @@ contract ToDoLists
         Task memory _task = tasks[_taskId];
         _task.isActive = false;
         tasks[_taskId] = _task;
-        TaskEventLibrary.EmitTaskDeleted(_task);(_task);
+        _task.EmitDeleted();
     }
 }

@@ -2,7 +2,7 @@ pragma solidity > 0.5.0;
 
 import { Task, ProgressStatus } from "../structs/Task.sol";
 
-library TaskEventLibrary
+library TaskEvents
 {
     event TaskCreated(
         uint256 taskId,
@@ -18,7 +18,7 @@ library TaskEventLibrary
         uint256 _taskId
     );
 
-    function EmitTaskCreated(
+    function EmitCreated(
         Task memory _task
     )
     internal
@@ -26,7 +26,7 @@ library TaskEventLibrary
         emit TaskCreated(_task.id, _task.content);
     }
 
-    function EmitTaskProgressStatusUpdate(
+    function EmitProgressStatusUpdate(
         Task memory _task
     )
     internal
@@ -34,7 +34,7 @@ library TaskEventLibrary
         emit TaskProgressStatusUpdate(_task.id, _task.progressStatus);
     }
 
-    function EmitTaskDeleted(
+    function EmitDeleted(
         Task memory _task
     )
     internal
