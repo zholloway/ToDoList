@@ -24,7 +24,7 @@ library TaskEvents
     )
     internal
     {
-        require(_task.isActive && _task.progressStatus == ProgressStatus.New);
+        require(_task.isActive && _task.progressStatus == ProgressStatus.New, "Task is not valid Create event");
         emit TaskCreated(_task.id, _task.content);
     }
 
@@ -41,7 +41,7 @@ library TaskEvents
     )
     internal
     {
-        require(!_task.isActive);
+        require(!_task.isActive, "Task is not valid Delete event");
         emit TaskDeleted(_task.id);
     }
 }

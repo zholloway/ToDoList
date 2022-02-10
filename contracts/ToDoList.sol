@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity > 0.5.0;
 import { Task } from "../structs/Task.sol";
-import { TaskEvents } from "../libs/TaskEventLibrary.sol";
+import { TaskEvents } from "../libs/TaskEvents.sol";
 import { ProgressStatus } from "../enums/ProgressStatus.sol";
 
 contract ToDoLists
@@ -36,10 +36,9 @@ contract ToDoLists
     )
     public view
     ownerOnly
-    returns (Task memory _task)
+    returns (Task memory)
     {
-        _task = tasks[_taskId];
-        return _task;
+        return tasks[_taskId];
     }
 
     function createTask(
@@ -67,10 +66,10 @@ contract ToDoLists
     public 
     ownerOnly
     {
-        require(_progressStatus < 3);
+        require(_progressStatus < 3, "Progress status does not exist");
         Task memory _task = tasks[_taskId];
         ProgressStatus _newStatus = ProgressStatus(_progressStatus);
-        require(_task.progressStatus != _newStatus);
+        require(_task.progressStatus != _newStatus, "Task is already set to given progress status");
         _task.progressStatus = _newStatus;
         tasks[_taskId] = _task;
         _task.EmitProgressStatusUpdate();
