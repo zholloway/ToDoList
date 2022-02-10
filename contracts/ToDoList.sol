@@ -9,8 +9,8 @@ contract ToDoLists
     using TaskEvents for Task;
 
     address private owner;
-    uint256 taskCount = 0;
-    mapping(uint256 => Task) tasks;
+    uint256 private taskCount = 0;
+    mapping(uint256 => Task) private tasks;
 
     modifier ownerOnly()
     { 
@@ -23,10 +23,29 @@ contract ToDoLists
         owner = msg.sender;
     }
 
+    function getTaskCount()
+    public view
+    ownerOnly
+    returns (uint256)
+    {
+        return taskCount;
+    }
+
+    function getTask(
+        uint256 _taskId
+    )
+    public view
+    ownerOnly
+    returns (Task memory _task)
+    {
+        _task = tasks[_taskId];
+        return _task;
+    }
+
     function createTask(
         string memory _content
     )
-    public 
+    public
     ownerOnly
     {
         uint256 _taskId = taskCount + 1;
