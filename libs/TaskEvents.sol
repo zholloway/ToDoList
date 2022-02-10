@@ -5,43 +5,26 @@ import { ProgressStatus } from "../enums/ProgressStatus.sol";
 
 library TaskEvents
 {
-    event TaskCreated(
-        uint256 taskId,
-        string content
-    );
+    event TaskCreated(uint256 taskId, string content);
 
-    event TaskProgressStatusUpdate (
-        uint256 taskId,
-        ProgressStatus progressStatus
-    );
+    event TaskProgressStatusUpdate (uint256 taskId, ProgressStatus progressStatus);
 
-    event TaskDeleted(
-        uint256 _taskId
-    );
+    event TaskDeleted(uint256 _taskId);
 
-    function EmitCreated(
-        Task memory _task
-    )
-    internal
+    function EmitCreated(Task memory task) internal
     {
-        require(_task.isActive && _task.progressStatus == ProgressStatus.New, "Task is not valid Create event");
-        emit TaskCreated(_task.id, _task.content);
+        require(task.isActive && task.progressStatus == ProgressStatus.New, "Task is not valid Create event");
+        emit TaskCreated(task.id, task.content);
     }
 
-    function EmitProgressStatusUpdate(
-        Task memory _task
-    )
-    internal
+    function EmitProgressStatusUpdate(Task memory task) internal
     {
-        emit TaskProgressStatusUpdate(_task.id, _task.progressStatus);
+        emit TaskProgressStatusUpdate(task.id, task.progressStatus);
     }
 
-    function EmitDeleted(
-        Task memory _task
-    )
-    internal
+    function EmitDeleted(Task memory task) internal
     {
-        require(!_task.isActive, "Task is not valid Delete event");
-        emit TaskDeleted(_task.id);
+        require(!task.isActive, "Task is not valid Delete event");
+        emit TaskDeleted(task.id);
     }
 }
