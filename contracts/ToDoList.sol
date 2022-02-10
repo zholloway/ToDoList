@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >0.5.0;
+pragma solidity > 0.5.0;
 import { Task, ProgressStatus } from "../structs/Task.sol";
 import { TaskEvents } from "../libs/TaskEventLibrary.sol";
 
