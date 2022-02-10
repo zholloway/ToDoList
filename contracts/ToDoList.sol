@@ -1,13 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >0.5.0;
-import { TaskLibrary } from "../libs/TaskLibrary.sol";
-import { Task } from "../structs/Task.sol";
+import { Task, ProgressStatus } from "../structs/Task.sol";
 import { TaskEventLibrary } from "../libs/TaskEventLibrary.sol";
 
 contract ToDoLists
 {
     address owner;
-    uint256 private taskCount = 0;
+    uint256 taskCount = 0;
     mapping(uint256 => Task) tasks;
 
     modifier ownerOnly()
@@ -31,23 +30,26 @@ contract ToDoLists
         Task memory _task = Task({
                 id: _taskId,
                 content: _content,
-                completed: false
+                progressStatus: ProgressStatus.New,
+                isActive: true
             });
         tasks[_taskId] = _task;
         taskCount++;
         TaskEventLibrary.EmitTaskCreated(_task);
     }
 
-    function markTaskCompleted(
-        uint256 _taskId
+    function updateProgressStatus(
+        uint256 _taskId,
+        uint256 _progressStatus
     )
     public 
     ownerOnly
     {
+        require(_progressStatus < 3);
         Task memory _task = tasks[_taskId];
-        _task.completed = true;
+        _task.progressStatus = ProgressStatus(_progressStatus);
         tasks[_taskId] = _task;
-        TaskEventLibrary.EmitTaskCompleted(_task);
+        TaskEventLibrary.EmitTaskProgressStatusUpdate(_task);
     }
 
     function deleteTask(
@@ -56,8 +58,9 @@ contract ToDoLists
     public 
     ownerOnly
     {
-        require(taskCount > 0);
-        delete tasks[_taskId];
-        taskCount--;
+        Task memory _task = tasks[_taskId];
+        _task.isActive = false;
+        tasks[_taskId] = _task;
+        TaskEventLibrary.EmitTaskDeleted(_task);(_task);
     }
 }
